@@ -28,19 +28,20 @@ public class BrowserIdentifier {
 	public static void main(String args[]) throws IOException {
 		String str;
 		init();
-		HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(Config.apiUrl).openConnection();
-		str = Config.ukey + "=" + Config.key + "&" + Config.uagent + "=" + URLEncoder.encode(uastring.get(0), charset);
-		httpURLConnection.setRequestMethod("POST");
-		httpURLConnection.setDoOutput(true); // forces the METHOD to POST
-		httpURLConnection.setDoInput(true);
-		httpURLConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=" + charset);
-		httpURLConnection.setRequestProperty("Accept-Charset", charset);
-		OutputStream out = httpURLConnection.getOutputStream();
-		System.out.println("Posting with: " + str);
-		out.write(str.getBytes(charset));
-		BufferedReader in = new BufferedReader( new InputStreamReader(httpURLConnection.getInputStream()) );
-		while ( (str = in.readLine() ) != null ) {
-			System.out.print(str);
+		for ( String ua : uastring ) {
+			HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(Config.apiUrl).openConnection();
+			httpURLConnection.setDoOutput(true); // forces the METHOD to POST
+			httpURLConnection.setDoInput(true);
+			httpURLConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=" + charset);
+			httpURLConnection.setRequestProperty("Accept-Charset", charset);
+			OutputStream out = httpURLConnection.getOutputStream();
+			str = Config.ukey + "=" + Config.key + "&" + Config.uagent + "=" + URLEncoder.encode(ua, charset);
+			System.out.println("Posting with: " + str);
+			out.write(str.getBytes(charset));
+			BufferedReader in = new BufferedReader( new InputStreamReader(httpURLConnection.getInputStream()) );
+			while ( (str = in.readLine() ) != null ) {
+				System.out.print(str);
+			}
 		}
 	}
 
